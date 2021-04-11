@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myappdeployment-2
+spec:
+  replicas: 5
+  selector: 
+    matchLabels: 
+      app: myapp-2
+  template:
+    metadata:
+      labels:
+        app: myapp-2
+    spec:
+      containers:
+        - name: myapp-2
+          image: melvinkimathi/nodejs-microservice:v1.0.0
+          ports:
+            - containerPort: 8080
+
+---
+kind: Service
+apiVersion:apps/v1
+metadata:
+  name: nodejs-example-service
+spec:
+  selector:
+    app: myapp-2
+  ports:
+    - protocol: 'TCP'
+      # Port accessible inside cluster
+      port: 8082
+      # Port to forward to inside the pod
+      targetPort: 8080
+      # Port accessible outside cluster
+      nodePort: 30003
+  type: LoadBalancer
+
